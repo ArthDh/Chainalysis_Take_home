@@ -1,5 +1,6 @@
 # app.py
 from flask import Flask, request, jsonify
+from scrape_sources import *
 app = Flask(__name__)
 
 
@@ -8,8 +9,9 @@ def respond():
     # Retrieve the name from url parameter
     name = request.args.get("name", None)
 
+    json_dump = get_subreddit(lim=5)
     # For debugging
-    print(f"got name {name}")
+    # print(f"got name {name}")
 
     response = {}
 
@@ -24,7 +26,7 @@ def respond():
         response["MESSAGE"] = f"Welcome {name} to our awesome platform!!"
 
     # Return the response in json format
-    return jsonify(response)
+    return jsonify(json_dump)
 
 
 @app.route('/post/', methods=['POST'])

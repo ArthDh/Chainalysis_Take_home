@@ -25,7 +25,7 @@ def get_subreddit(subs=["UpliftingNews"], lim=10):
                 d['tags'] = soup.find("meta", property="article:tag")['content']
             else:
                 d['tags'] = None
-            json_dump.append(json.dumps(d, indent=4))
+            json_dump.append(d)
     return json_dump
 
 
@@ -40,7 +40,7 @@ def get_site_data(url="https://www.goodnewsnetwork.org/", lim=10):
             d['url'] = div.a['href']
             d['img_url'] = div.img['src']
             d['tags'] = div.parent.find_all('a', {'class': 'td-post-category'})[0].text
-            json_dump.append(json.dumps(d, indent=4))
+            json_dump.append(json.dumps(d))
 
     elif "positive.news":
         for div in soup.find_all('div', {'class': 'column card '})[:lim]:
@@ -48,7 +48,7 @@ def get_site_data(url="https://www.goodnewsnetwork.org/", lim=10):
             d['url'] = div.a['href']
             d['img_url'] = div.a.img['src']
             d['tags'] = ",".join([tag.text for tag in div.div.find_all('a', {'class': 'card__category'})])
-            json_dump.append(json.dumps(d, indent=4))
+            json_dump.append(json.dumps(d))
 
     return json_dump
 

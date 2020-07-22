@@ -25,6 +25,7 @@ def get_subreddit(subs=["UpliftingNews"], lim=10):
             else:
                 d['tags'] = None
             json_dump.append(d)
+            d = dict()
     return json_dump
 
 
@@ -44,6 +45,7 @@ def get_site_data(url="goodnewsnetwork", lim=10):
             d['img_url'] = div.img['src']
             d['tags'] = div.parent.find_all('a', {'class': 'td-post-category'})[0].text
             json_dump.append(d)
+            d = dict()
 
     elif "positive.news":
         for div in soup.find_all('div', {'class': 'column card '})[:lim]:
@@ -52,17 +54,18 @@ def get_site_data(url="goodnewsnetwork", lim=10):
             d['img_url'] = div.a.img['src']
             d['tags'] = ",".join([tag.text for tag in div.div.find_all('a', {'class': 'card__category'})])
             json_dump.append(d)
+            d = dict()
 
     return json_dump
 
 
 if __name__ == '__main__':
-    # json_dump = get_site_data(lim=2)
-    # for d in json_dump:
-    #     print(d)
-    #     print("*" * 20)
-    json_dump = get_subreddit(lim=5)
-    # print(json_dump)
+    json_dump = get_site_data(lim=2)
     for d in json_dump:
         print(d)
         print("*" * 20)
+    # json_dump = get_subreddit(lim=5)
+    # # print(json_dump)
+    # for d in json_dump:
+    #     print(d)
+    #     print("*" * 20)

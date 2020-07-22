@@ -4,28 +4,26 @@ from scrape_sources import *
 app = Flask(__name__)
 
 
-@app.route('/getmsg/', methods=['GET'])
-def respond():
-    # Retrieve the name from url parameter
-    name = request.args.get("name", None)
+@app.route('/getcontent/', methods=['GET'])
+def getcontent():
+    src = request.args.get("src", None)
+    lim = int(request.args.get("lim", None))
 
-    json_dump = get_subreddit(lim=5)
-    # For debugging
-    # print(f"got name {name}")
+    if "reddit" in src:
+        json_dump = get_subreddit(lim=lim)
+    else:
+        json_dump = get_site_data(url=src, lim=lim)
+
+    print(f"Source: {src} Returning: {lim}")
+    print(json_dump)
 
     response = {}
 
-    # # Check if user sent a name at all
-    # if not name:
-    #     response["ERROR"] = "no name found, please send a name."
-    # # Check if the user entered a number not a name
-    # elif str(name).isdigit():
-    #     response["ERROR"] = "name can't be numeric."
-    # # Now the user entered a valid name
-    # else:
-    #     response["MESSAGE"] = f"Welcome {name} to our awesome platform!!"
-    response["MESSAGE"] = jsonify(json_dump)
-    # Return the response in json format
+    if json_dump:
+        response["MESSAGE"] = jsonify(json_dump)
+    else:
+        response["ERROR"] = "Pupper squash bugs"
+
     return jsonify(json_dump)
 
 
@@ -50,7 +48,7 @@ def post_something():
 
 @app.route('/')
 def index():
-    return "<h1>Welcome to our server !!</h1>"
+    return "<h1>Nothing to see here.</h1>"
 
 
 if __name__ == '__main__':

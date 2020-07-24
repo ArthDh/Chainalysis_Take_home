@@ -1,6 +1,43 @@
 import praw
 import requests as req
 import bs4 as bs
+from gensim.summarization.summarizer import summarize
+
+
+def get_soup_text(soup=None):
+    text = ' '.join(map(lambda p: p.text, soup.find_all('p')))
+    return text
+
+
+def summarize_soup(soup, wc=60):
+    url_text = get_soup_text(soup).replace(u"Â", u"").replace(u"â", u"")
+    final_summary = ""
+    if len(url_text) > wc:
+        final_summary = summarize(url_text, word_count=wc)
+        final_summary = final_summary.replace("\n", "")
+    return final_summary
+
+
+def get_url_json(url=""):
+    source = req.get(url)
+    soup = bs.BeautifulSoup(source.text, 'lxml')
+    d = dict()
+    if soup.find("meta", property="og:image"):
+        d['img_url'] = soup.find("meta", property="og:image")['content']
+    else:
+        d['img_url'] = None
+    if soup.find("meta", property="article:tag"):
+        d['tags'] = soup.find("meta", property="article:tag")['content']
+    else:
+        d['tags'] = None
+    if soup.find("meta", property="og:title"):
+        d['title'] = soup.find("meta", property="og:title")['content']
+    else:
+        d['title'] = None
+    d['summary'] = summarize_soup(soup, wc=100)
+    d['url'] = url
+
+    return d
 
 
 def get_subreddit(subs=["UpliftingNews"], lim=10):
@@ -12,20 +49,8 @@ def get_subreddit(subs=["UpliftingNews"], lim=10):
     json_dump = []
     for sub in subs:
         for submission in reddit.subreddit(sub).hot(limit=lim):
-            d['title'] = submission.title
-            d['url'] = submission.url
-            source = req.get(submission.url, headers=headers)
-            soup = bs.BeautifulSoup(source.text, 'lxml')
-            if soup.find("meta", property="og:image"):
-                d['img_url'] = soup.find("meta", property="og:image")['content']
-            else:
-                d['img_url'] = None
-            if soup.find("meta", property="article:tag"):
-                d['tags'] = soup.find("meta", property="article:tag")['content']
-            else:
-                d['tags'] = None
+            d = get_url_json(submission.url)
             json_dump.append(d)
-            d = dict()
     return json_dump
 
 
@@ -40,31 +65,26 @@ def get_site_data(url="goodnewsnetwork", lim=10):
     json_dump = []
     if "goodnewsnetwork" in url:
         for div in soup.find_all('div', {'class': 'td-module-thumb'})[:lim]:
-            d['title'] = div.a['title']
-            d['url'] = div.a['href']
-            d['img_url'] = div.img['src']
+            d = get_url_json(div.a['href'])
             d['tags'] = div.parent.find_all('a', {'class': 'td-post-category'})[0].text
             json_dump.append(d)
-            d = dict()
 
     elif "positive.news":
         for div in soup.find_all('div', {'class': 'column card '})[:lim]:
-            d['title'] = div.div.a.text
-            d['url'] = div.a['href']
-            d['img_url'] = div.a.img['src']
+            d = get_url_json(div.a['href'])
             d['tags'] = ",".join([tag.text for tag in div.div.find_all('a', {'class': 'card__category'})])
             json_dump.append(d)
-            d = dict()
 
     return json_dump
 
 
 if __name__ == '__main__':
-    json_dump = get_site_data(lim=2)
+    json_dump = get_site_data(url="positive.news",lim=5)
+
     for d in json_dump:
         print(d)
         print("*" * 20)
-    # json_dump = get_subreddit(lim=5)
+    # json_dump = get_subreddit(lim=15)
     # # print(json_dump)
     # for d in json_dump:
     #     print(d)

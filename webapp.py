@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from scrape_sources import *
 app = Flask(__name__)
 
@@ -48,7 +48,9 @@ def post_something():
 
 @app.route('/')
 def index():
-    return "<h1>Nothing to see here.</h1>"
+    json_dump = get_subreddit(lim=12)
+    # print(json_dump)
+    return render_template('index.html', mydict=json_dump)
 
 
 if __name__ == '__main__':

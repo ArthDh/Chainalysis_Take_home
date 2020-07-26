@@ -50,7 +50,8 @@
 
 				// Poptrox.
 					$content.poptrox({
-						usePopupCaption: true
+						usePopupCaption: true,
+						usePopupNav :true
 					});
 
 				// Tabs.

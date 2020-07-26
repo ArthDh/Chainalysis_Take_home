@@ -47,7 +47,12 @@
                                             {% for item in mydict %}
                                                 <div class="media all" style="margin:5px">
                                                     <a href="{{item.img_url}}">
-                                                        <img src="{{item.img_url}}" alt="{{item.title}}" title="{{item.summary}}" style="border-radius:10px !important;"/>
+                                                        <img src="{{item.img_url}}" alt="{{item.title}}" title="
+                                                        <h5>{{item.title}} </h5>
+                                                        {{item.summary}}
+                                                        <a href='{{item.url}}'> Read more </a>
+                                                        " style="border-radius:10px !important;"/>
+
                                                     </a>
                                                     <div>
                                                         {{item.title}}

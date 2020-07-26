@@ -1618,19 +1618,19 @@
 
 /* Poptrox */
 .poptrox-popup {
-    height: 800px !important;
+    height: 90%!important;
     border-radius: 10px !important;
 }
 .poptrox-popup > div > img {
     max-width: 600px !important;
-    max-height: 500px !important;
+    max-height: 300px !important;
 }
 
 .poptrox-popup  .caption {
     position:absolute !important;
-    top:470px !important;
-    bottom: 350px !important;
-    line-height: 30px !important;
+    bottom: 0px !important;
+    height: 500px !important;
+    line-height: 25px !important;
     left: 10% !important;
     width: 80% !important;
 }

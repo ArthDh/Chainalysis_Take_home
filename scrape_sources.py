@@ -79,13 +79,8 @@ def get_site_data(url="goodnewsnetwork", lim=10):
 
 
 if __name__ == '__main__':
-    json_dump = get_site_data(url="positive.news",lim=5)
+    json_dump = get_site_data(url="positive.news", lim=5)
 
     for d in json_dump:
         print(d)
         print("*" * 20)
-    # json_dump = get_subreddit(lim=15)
-    # # print(json_dump)
-    # for d in json_dump:
-    #     print(d)
-    #     print("*" * 20)

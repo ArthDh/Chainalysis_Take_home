@@ -1623,9 +1623,12 @@
 }
 .poptrox-popup > div > img {
     max-width: 600px !important;
+    max-height: 500px !important;
 }
 
 .poptrox-popup  .caption {
+    position:absolute !important;
+    top:470px !important;
     bottom: 350px !important;
     line-height: 30px !important;
     left: 10% !important;

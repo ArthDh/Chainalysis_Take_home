@@ -35,8 +35,6 @@
 
                                     <!-- Filters -->
                                         <header>
-<!-- Loop over dict values -->
-
                                             <h1><img src="{{url_for('static', filename='images/pupper.png')}}" alt="PUPPER POWER!" height="25px" width="25px"/>Pupper Portal<img src="{{url_for('static', filename='images/pupper.png')}}" alt="PUPPER POWER!" height="25px" width="25px"/></h1>
                                             <ul class="tabs">
                                                 <li><a href="#" data-tag="all" class="button active">All</a></li>
@@ -46,42 +44,17 @@
                                             </ul>
                                         </header>
                                         <div class="content">
-                                            <div class="media all people">
-                                                <a href="{{mydict[0].img_url}}"><img src="{{mydict[0].img_url}}" alt="{{mydict[0].title}}" title="{{mydict[0].summary}}" /></a>
-                                            </div>
-                                            <div class="media all place">
-                                                <a href="{{mydict[7].img_url}}"><img src="{{mydict[7].img_url}}" alt="{{mydict[7].title}}" title="{{mydict[7].summary}}" /></a>
-                                            </div>
-                                            <div class="media all thing">
-                                                <a href="{{mydict[1].img_url}}"><img src="{{mydict[1].img_url}}" alt="{{mydict[1].title}}" title="{{mydict[1].summary}}" /></a>
-                                            </div>
-                                            <div class="media all people">
-                                                <a href="{{mydict[2].img_url}}"><img src="{{mydict[2].img_url}}" alt="{{mydict[2].title}}" title="{{mydict[2].summary}}" /></a>
-                                            </div>
-                                            <div class="media all place">
-                                                <a href="{{mydict[3].img_url}}"><img src="{{mydict[3].img_url}}" alt="{{mydict[3].title}}" title="{{mydict[3].summary}}" /></a>
-                                            </div>
-                                            <div class="media all thing">
-                                                <a href="{{mydict[4].img_url}}"><img src="{{mydict[4].img_url}}" alt="{{mydict[4].title}}" title="{{mydict[4].summary}}" /></a>
-                                            </div>
-                                            <div class="media all people">
-                                                <a href="{{mydict[5].img_url}}"><img src="{{mydict[5].img_url}}" alt="{{mydict[5].title}}" title="{{mydict[5].summary}}" /></a>
-                                            </div>
-                                            <div class="media all place">
-                                                <a href="{{mydict[6].img_url}}"><img src="{{mydict[6].img_url}}" alt="{{mydict[6].title}}" title="{{mydict[6].summary}}" /></a>
-                                            </div>
-                                            <div class="media all thing">
-                                                <a href="{{mydict[8].img_url}}"><img src="{{mydict[8].img_url}}" alt="{{mydict[8].title}}" title="{{mydict[8].summary}}" /></a>
-                                            </div>
-                                            <div class="media all people">
-                                                <a href="{{mydict[9].img_url}}"><img src="{{mydict[9].img_url}}" alt="{{mydict[9].title}}" title="{{mydict[9].summary}}" /></a>
-                                            </div>
-                                            <div class="media all people">
-                                                <a href="{{mydict[10].img_url}}"><img src="{{mydict[10].img_url}}" alt="{{mydict[10].title}}" title="{{mydict[10].summary}}" /></a>
-                                            </div>
-                                            <div class="media all people">
-                                                <a href="{{mydict[11].img_url}}"><img src="{{mydict[11].img_url}}" alt="{{mydict[11].title}}" title="{{mydict[11].summary}}" /></a>
-                                            </div>
+                                            {% for item in mydict %}
+                                                <div class="media all" style="margin:5px">
+                                                    <a href="{{item.img_url}}">
+                                                        <img src="{{item.img_url}}" alt="{{item.title}}" title="{{item.summary}}" style="border-radius:10px !important;"/>
+                                                    </a>
+                                                    <div>
+                                                        {{item.title}}
+                                                    </div>
+                                                </div>
+
+                                            {% endfor %}
 
                                         </div>
                                 </div>

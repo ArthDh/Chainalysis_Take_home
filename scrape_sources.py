@@ -1,4 +1,5 @@
-import praw
+# import praw
+import feedparser as feed
 import requests as req
 import bs4 as bs
 from gensim.summarization.summarizer import summarize
@@ -19,8 +20,12 @@ def summarize_soup(soup, wc=60):
 
 
 def get_url_json(url=""):
-    source = req.get(url)
+    headers = {"User-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36",
+               'cache-control': 'no-cache',
+               'content-type': 'application/json'}
+    source = req.get(url, headers=headers)
     soup = bs.BeautifulSoup(source.text, 'lxml')
+
     d = dict()
     if soup.find("meta", property="og:image"):
         d['img_url'] = soup.find("meta", property="og:image")['content']
@@ -34,22 +39,28 @@ def get_url_json(url=""):
         d['title'] = soup.find("meta", property="og:title")['content']
     else:
         d['title'] = None
-    d['summary'] = summarize_soup(soup, wc=100)
     d['url'] = url
-
     return d
 
 
+def summarize_url(url):
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36',
+               "Accept-Language": "en-US,en-IN;q=0.9,en-GB;q=0.8,en;q=0.7"
+               }
+    source = req.get(url, headers=headers)
+    soup = bs.BeautifulSoup(source.text, 'lxml')
+    return summarize_soup(soup, wc=100)
+
+
 def get_subreddit(subs=["UpliftingNews"], lim=10):
-    reddit = praw.Reddit(client_id="tgnInGucwBQiKg",
-                         client_secret="LAZuGSps7eG3AMSa3BE2-CkqzWI",
-                         user_agent="Agent Pupper")
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     d = dict()
     json_dump = []
     for sub in subs:
-        for submission in reddit.subreddit(sub).hot(limit=lim):
-            d = get_url_json(submission.url)
+        d = feed.parse(f'https://www.reddit.com/r/{sub}/.rss')
+        for entry in d.entries[:lim]:
+            soup = bs.BeautifulSoup(entry.content[0].value, 'lxml')
+            url = soup.find('span').a['href']
+            d = get_url_json(url)
             json_dump.append(d)
     return json_dump
 
@@ -79,8 +90,13 @@ def get_site_data(url="goodnewsnetwork", lim=10):
 
 
 if __name__ == '__main__':
-    json_dump = get_site_data(url="positive.news", lim=5)
+    # json_dump = get_site_data(url="positive.news", lim=5)
 
+    # for d in json_dump:
+    #     print(d)
+    #     print("*" * 20)
+
+    json_dump = get_subreddit(lim=1)
     for d in json_dump:
         print(d)
         print("*" * 20)

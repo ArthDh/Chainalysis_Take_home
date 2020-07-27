@@ -51,7 +51,10 @@
 				// Poptrox.
 					$content.poptrox({
 						usePopupCaption: true,
-						usePopupNav :true
+						// usePopupNav :true,
+						caption: function ($a) {
+							        return  $('.summary');
+							    }
 					});
 
 				// Tabs.
@@ -60,7 +63,6 @@
 						var $this = $(this),
 							$tabs = $this.find('.tabs a'),
 							$media = $this.find('.media');
-
 						$tabs.on('click', function(e) {
 
 							var $this = $(this),

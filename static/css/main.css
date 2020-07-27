@@ -1622,15 +1622,15 @@
     border-radius: 10px !important;
 }
 .poptrox-popup > div > img {
-    max-width: 600px !important;
-    max-height: 300px !important;
+    max-width: 650px !important;
+    max-height: 350px !important;
 }
 
 .poptrox-popup  .caption {
     position:absolute !important;
     bottom: 0px !important;
     height: 500px !important;
-    line-height: 25px !important;
+    line-height: 20px !important;
     left: 10% !important;
     width: 80% !important;
 }

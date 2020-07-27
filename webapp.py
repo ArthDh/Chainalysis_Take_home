@@ -43,14 +43,28 @@ def post_something():
             "ERROR": "no name found, please send a name."
         })
 
-# A welcome message to test our server
+
+@app.route('/summary', methods=['GET'])
+def summary():
+    url = request.args.get('url')
+    response = summarize_url(url)
+    return response, 200, {'Content-Type': 'text/plain'}
 
 
 @app.route('/')
 def index():
-    json_dump = get_subreddit(lim=12)
-    # print(json_dump)
-    return render_template('index.html', mydict=json_dump)
+    json_dump = get_subreddit(lim=15)
+    final_dict = []
+    for val in json_dump:
+        if val['title'] == None:
+            continue
+        else:
+            final_dict.append(val)
+    json_dump2 = get_site_data(url="goodnewsnetwork", lim=15)
+    for val in json_dump2:
+        final_dict.append(val)
+    # print(final_dict)
+    return render_template('index.html', mydict=final_dict)
 
 
 if __name__ == '__main__':

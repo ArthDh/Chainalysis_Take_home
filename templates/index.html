@@ -43,23 +43,49 @@
                                                 <li><a href="#" data-tag="thing" class="button">Things</a></li>
                                             </ul>
                                         </header>
+                                        <div class='summary' style="visibility: hidden;"> </div>
                                         <div class="content">
+                                        {# in main.html #}
                                             {% for item in mydict %}
                                                 <div class="media all" style="margin:5px">
-                                                    <a href="{{item.img_url}}">
-                                                        <img src="{{item.img_url}}" alt="{{item.title}}" title="
-                                                        <h5>{{item.title}} </h5>
-                                                        {{item.summary}}
-                                                        <a href='{{item.url}}'> Read more </a>
-                                                        " style="border-radius:10px !important;"/>
-
-                                                    </a>
+                                                    <a href="{{item.img_url}}" class ="command" title= "{{item.title}}">
+                                                        <img src="{{item.img_url}}" alt="{{item.url}}"
+                                                        style="border-radius:10px !important;" />
+                                                    </a >
                                                     <div>
                                                         {{item.title}}
                                                     </div>
                                                 </div>
-
                                             {% endfor %}
+                                        {# and then elsewhere #}
+                                        <script>
+                                            var but;
+                                        addEventListener("DOMContentLoaded", function() {
+                                          var commandButtons = document.querySelectorAll(".command");
+                                          for (var i=0, l=commandButtons.length; i<l; i++) {
+                                            var button = commandButtons[i];
+                                            button.addEventListener("click", function(e) {
+                                             e.preventDefault();
+
+                                              var clickedButton = e.target;
+                                              var request = new XMLHttpRequest();
+                                              request.onload = function() {
+                                                (function($) {
+                                                    // $(".summary").text(request.responseText);
+                                                    but = clickedButton;
+                                                    console.log(clickedButton)
+                                                    $(".summary").prepend("<h5>"+but.parentElement.title+"</h5><br>"+request.responseText);
+                                                    $(".summary").attr("style", "visibility:visible");
+                                                })(jQuery);
+                                              };
+                                              $(".summary").text("");
+                                              request.open("GET", "/summary?url=" + clickedButton.alt, true);
+                                              request.send();
+                                            });
+                                          }
+                                        }, true);
+
+                                        </script>
 
                                         </div>
                                 </div>

@@ -16,8 +16,6 @@ jmespath==0.10.0
 lxml==4.5.2
 MarkupSafe==1.1.1
 numpy==1.19.1
-feedparser-5.2.1
-prawcore==1.4.0
 python-dateutil==2.8.1
 requests==2.24.0
 s3transfer==0.3.3

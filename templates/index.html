@@ -35,57 +35,72 @@
 
                                     <!-- Filters -->
                                         <header>
-                                            <h1><img src="{{url_for('static', filename='images/pupper.png')}}" alt="PUPPER POWER!" height="25px" width="25px"/>Pupper Portal<img src="{{url_for('static', filename='images/pupper.png')}}" alt="PUPPER POWER!" height="25px" width="25px"/></h1>
-                                            <ul class="tabs">
-                                                <li><a href="#" data-tag="all" class="button active">All</a></li>
-                                                <li><a href="#" data-tag="people" class="button">People</a></li>
-                                                <li><a href="#" data-tag="place" class="button">Places</a></li>
-                                                <li><a href="#" data-tag="thing" class="button">Things</a></li>
-                                            </ul>
+                                            <h1>💱Chainalysis Take home💱</h1>
                                         </header>
-                                        <div class='summary' style="visibility: hidden;"> </div>
-                                        <div class="content">
-                                        {# in main.html #}
-                                            {% for item in mydict %}
-                                                <div class="media all" style="margin:5px">
-                                                    <a href="{{item.img_url}}" class ="command" title= "{{item.title}}">
-                                                        <img src="{{item.img_url}}" alt="{{item.url}}"
-                                                        style="border-radius:10px !important;" />
-                                                    </a >
-                                                    <div>
-                                                        {{item.title}}
-                                                    </div>
+
+                                        <div>
+                                        <form action="{{ url_for('exchange') }}" method="post">
+                                        
+                                            <div style="width: 25%;float: left" >
+                                                Exchange 1
+                                                    <select name="exchange1" >
+                                                    {% for item in exchanges %}
+                                                        <option  value={{item}}>{{item}} </option>
+                                                    {% endfor %}
+                                                    </select>
+                                            </div >
+                                            <div style="width: 25%;float: left" >
+                                                Exchange 2
+                                                    <select name="exchange2" >
+                                                    {% for item in exchanges %}
+                                                        <option  value={{item}}>{{item}} </option>
+                                                    {% endfor %}
+                                                    </select>
+                                            </div >
+                                            <div  style="width: 50%">
+                                                Coin
+                                                <form>
+                                                    <select name="coins" >
+
+                                                    {% for key, item in coins.items() %}
+                                                        <option type="checkbox" value={{item}}>{{item}} </option>
+                                                    {% endfor %}
+                                                    </select>
+
+                                            </div>
+
+
+                                            <input type="submit" value="Submit" style="margin-top: 5em;">
+
+                                        </form>
+                                        
+
+                                        </div>
+                                        <div style="height:5em;">
+                                            {% if comparision!=None %}
+                                                <div>
+                                                    {% for key, item in comparision.items() %}
+                                                        <h1>{{key}}</h1>
+                                                        <div>
+                                                        <h3>Open: {{item[0]}} Close: {{item[1]}}</h3>
+                                                        </div>
+                                                    {% endfor %}
+
                                                 </div>
-                                            {% endfor %}
-                                        {# and then elsewhere #}
-                                        <script>
-                                            var but;
-                                        addEventListener("DOMContentLoaded", function() {
-                                          var commandButtons = document.querySelectorAll(".command");
-                                          for (var i=0, l=commandButtons.length; i<l; i++) {
-                                            var button = commandButtons[i];
-                                            button.addEventListener("click", function(e) {
-                                             e.preventDefault();
-
-                                              var clickedButton = e.target;
-                                              var request = new XMLHttpRequest();
-                                              request.onload = function() {
-                                                (function($) {
-                                                    // $(".summary").text(request.responseText);
-                                                    but = clickedButton;
-                                                    console.log(clickedButton)
-                                                    $(".summary").prepend("<h5>"+but.parentElement.title+"</h5><br>"+request.responseText);
-                                                    $(".summary").attr("style", "visibility:visible");
-                                                })(jQuery);
-                                              };
-                                              $(".summary").text("");
-                                              request.open("GET", "/summary?url=" + clickedButton.alt, true);
-                                              request.send();
-                                            });
-                                          }
-                                        }, true);
-
-                                        </script>
+                                            {% else %}
+                                            {% endif %}
+                                            {% if comparision!=None %}
+                                            <div>
+                                                <h1>Recommendation</h1>
+                                                <h3>
+                                                    Buy on {{rec[0]}} at <div style="color:green">{{rec[2]}}</div> 
+                                                    Sell on {{rec[1]}} at <div style="color:red">{{rec[3]}}</div> <br>
+                                                    Profit: 
+                                                    <div style="color:green"> ${{rec[4]}}</div>
+                                                </h3>
+                                            </div>
+                                            {% endif %}
+                                        Exchanges that support both BTC and ETH : aax, bequant, bibox, binanceusdm, huobi, huobipro, latoken
 
                                         </div>
                                 </div>

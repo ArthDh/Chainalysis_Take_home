@@ -1,70 +1,70 @@
 # app.py
-from flask import Flask, request, jsonify, render_template
-from scrape_sources import *
+from flask import Flask, request, render_template
+import ccxt
 app = Flask(__name__)
+# app.debug = True
+
+final_dict = {}
+exchanges = ccxt.exchanges
+coins = {'Bitcoin': 'BTC/USDT', 'Ethereum':'ETH/USDT'}
 
 
-@app.route('/getcontent/', methods=['GET'])
-def getcontent():
-    src = request.args.get("src", None)
-    lim = int(request.args.get("lim", None))
+@app.route('/exchange', methods=['GET', 'POST'])
+def exchange():
 
-    if "reddit" in src:
-        json_dump = get_subreddit(lim=lim)
-    else:
-        json_dump = get_site_data(url=src, lim=lim)
+    ex1 = request.form.get('exchange1')
+    ex2 = request.form.get('exchange2')
 
-    print(f"Source: {src} Returning: {lim}")
-    print(json_dump)
-
-    response = {}
-
-    if json_dump:
-        response["MESSAGE"] = jsonify(json_dump)
-    else:
-        response["ERROR"] = "Pupper squash bugs"
-
-    return jsonify(json_dump)
+    exchange1 = ccxt.__getattribute__(ex1)()
+    exchange2 = ccxt.__getattribute__(ex2)()
+    coin =request.form.get('coins')
 
 
-@app.route('/post/', methods=['POST'])
-def post_something():
-    param = request.form.get('name')
-    print(param)
-    # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
-    if param:
-        return jsonify({
-            "Message": f"Welcome {name} to our awesome platform!!",
-            # Add this option to distinct the POST request
-            "METHOD": "POST"
-        })
-    else:
-        return jsonify({
-            "ERROR": "no name found, please send a name."
-        })
+    res_arr_1 = [] 
+    try:
+        dict_1 = exchange1.fetchTickers(symbols = coin)
 
+        if dict_1[coin].get('open', 0)==0:
+            res_arr_1.append('N/A')
+        else:
+            res_arr_1.append(f"{dict_1[coin]['open']:.2f}")
 
-@app.route('/summary', methods=['GET'])
-def summary():
-    url = request.args.get('url')
-    response = summarize_url(url)
-    return response, 200, {'Content-Type': 'text/plain'}
+        if dict_1[coin].get('close', 0)==0:
+            res_arr_1.append('N/A')
+        else:
+            res_arr_1.append(f"{dict_1[coin]['close']:.2f}")
+    except:
+        res_arr_1.append(f'Exchange Does not support {coin}')
+    res_arr_2 = [] 
+    try:
+        dict_2 = exchange2.fetchTickers(symbols = coin)
+
+        if dict_2[coin].get('open', 0)==0:
+            res_arr_2.append('N/A')
+        else:
+            res_arr_2.append(f"{dict_2[coin]['open']:.2f}")
+        if dict_2[coin].get('close', 0)==0:
+            res_arr_2.append('N/A')
+        else:
+            res_arr_2.append(f"{dict_2[coin]['close']:.2f}")
+    except:
+        res_arr_2.append(f'Exchange Does not support {coin}')
+
+    rec = None
+    if res_arr_1[0]!=f'Exchange Does not support {coin}' and res_arr_2[0]!=f'Exchange Does not support {coin}':
+        if float(res_arr_1[0])<float(res_arr_2[0]):
+            rec = (ex1.upper(), ex2.upper(), res_arr_1[0], res_arr_2[0],  f'{(float(res_arr_2[0])-float(res_arr_1[0])):.2f}')
+        else:
+            rec = (ex2.upper(), ex1.upper(), res_arr_2[0], res_arr_2[0],  f'{(float(res_arr_1[0])-float(res_arr_2[0])):.2f}')
+    return render_template('index.html', mydict=final_dict, exchanges= exchanges, coins = coins,\
+                             comparision={ex1.upper():res_arr_1, ex2.upper():res_arr_2},\
+                             rec = rec)
+
 
 
 @app.route('/')
 def index():
-    json_dump = get_subreddit(lim=15)
-    final_dict = []
-    for val in json_dump:
-        if val['title'] == None:
-            continue
-        else:
-            final_dict.append(val)
-    json_dump2 = get_site_data(url="goodnewsnetwork", lim=15)
-    for val in json_dump2:
-        final_dict.append(val)
-    # print(final_dict)
-    return render_template('index.html', mydict=final_dict)
+    return render_template('index.html', mydict=final_dict, exchanges= exchanges, coins = coins, comparision=None)
 
 
 if __name__ == '__main__':

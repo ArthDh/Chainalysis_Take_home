@@ -2,7 +2,7 @@
 
 Clone the repository using
 ```
-git clone https://github.com/ArthDh/ECE229.git
+git clone https://github.com/ArthDh/Chainalysis_Take_home.git
 ```
 
 Create a python virtual environment
@@ -18,6 +18,12 @@ Install dependencies
 ```
 pip install requirements.txt
 ```
+
+Run the Flask server
+```
+python webapp.py
+```
+
 
 Questionnaire:
 
